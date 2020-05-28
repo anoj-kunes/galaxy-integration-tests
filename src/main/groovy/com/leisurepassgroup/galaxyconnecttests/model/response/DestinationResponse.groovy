@@ -6,9 +6,10 @@ class DestinationResponse {
     String id
     String name
 
-    @JsonCreator
     DestinationResponse(id, name) {
         this.id = id
         this.name = name
     }
+
+    DestinationResponse(){}
 }

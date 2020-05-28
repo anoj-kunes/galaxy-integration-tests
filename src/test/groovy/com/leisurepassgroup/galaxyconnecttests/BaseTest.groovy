@@ -3,20 +3,23 @@ package com.leisurepassgroup.galaxyconnecttests
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.leisurepassgroup.galaxyconnecttests.model.response.DestinationResponse
 import org.mockserver.client.MockServerClient
+
+import java.net.http.HttpClient
+
 import static org.mockserver.model.HttpResponse.response
 import static org.mockserver.model.HttpRequest.request
 import spock.lang.Specification
 
 abstract class BaseTest extends Specification {
 
-	private static def HOST = "https://mockserver.dev.passport.lpgdev.co"
+	static def HOST = "localhost"
+	static final HttpClient CLIENT = HttpClient.newBuilder().build();
 	def mapper = new ObjectMapper()
 	def adminUiChannelServerMock = new MockServerClient(
-			HOST , 1080, "/admin-ui-channel"
-	).withSecure(true)
+			HOST, 1080
+	)
 
-
-	def mockDestination(DestinationResponse output, int statusCode = 200) {
+	def mockDestination(List<DestinationResponse> output, int statusCode = 200) {
 		def json = mapper.writeValueAsString(output)
 		adminUiChannelServerMock
 				.when(
@@ -29,9 +32,5 @@ abstract class BaseTest extends Specification {
 								.withStatusCode(statusCode)
 								.withBody(json)
 				)
-	}
-
-	def setup() {
-		adminUiChannelServerMock.reset()
 	}
 }
